@@ -66,6 +66,8 @@ class IngressController(Controller):
             return []
         namespace = controller_service.metadata.namespace
         services = []
+        if controller_service.metadata.annotations is None or "bunkerweb.io" not in controller_service.metadata.annotations:
+            return []
         # parse rules
         for rule in controller_service.spec.rules:
             if not rule.host:
@@ -210,7 +212,7 @@ class IngressController(Controller):
         if obj.kind == "Pod":
             return annotations and "bunkerweb.io/INSTANCE" in annotations
         if obj.kind == "Ingress":
-            return True
+            return annotations and "bunkerweb.io" in annotations
         if obj.kind == "ConfigMap":
             return annotations and "bunkerweb.io/CONFIG_TYPE" in annotations
         if obj.kind == "Service":
