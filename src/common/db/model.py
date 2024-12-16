@@ -115,7 +115,7 @@ class Global_values(Base):
 class Services(Base):
     __tablename__ = "bw_services"
 
-    id = Column(String(255), primary_key=True)
+    id = Column(String(64), primary_key=True)
     method = Column(METHODS_ENUM, nullable=False)
     is_draft = Column(Boolean, default=False, nullable=False)
 
@@ -127,7 +127,7 @@ class Services(Base):
 class Services_settings(Base):
     __tablename__ = "bw_services_settings"
 
-    service_id = Column(String(255), ForeignKey("bw_services.id", onupdate="cascade", ondelete="cascade"), primary_key=True)
+    service_id = Column(String(64), ForeignKey("bw_services.id", onupdate="cascade", ondelete="cascade"), primary_key=True)
     setting_id = Column(String(256), ForeignKey("bw_settings.id", onupdate="cascade", ondelete="cascade"), primary_key=True)
     value = Column(TEXT, nullable=False)
     suffix = Column(Integer, primary_key=True, nullable=True, default=0)
@@ -172,7 +172,7 @@ class Jobs_cache(Base):
 
     id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
     job_name = Column(String(128), ForeignKey("bw_jobs.name", onupdate="cascade", ondelete="cascade"), nullable=False)
-    service_id = Column(String(255), ForeignKey("bw_services.id", onupdate="cascade", ondelete="cascade"), nullable=True)
+    service_id = Column(String(64), ForeignKey("bw_services.id", onupdate="cascade", ondelete="cascade"), nullable=True)
     file_name = Column(String(256), nullable=False)
     data = Column(LargeBinary(length=(2**32) - 1), nullable=True)
     last_update = Column(DateTime, nullable=True)
@@ -187,7 +187,7 @@ class Custom_configs(Base):
     __table_args__ = (UniqueConstraint("service_id", "type", "name"),)
 
     id = Column(Integer, Identity(start=1, increment=1), primary_key=True)
-    service_id = Column(String(255), ForeignKey("bw_services.id", onupdate="cascade", ondelete="cascade"), nullable=True)
+    service_id = Column(String(64), ForeignKey("bw_services.id", onupdate="cascade", ondelete="cascade"), nullable=True)
     type = Column(CUSTOM_CONFIGS_TYPES_ENUM, nullable=False)
     name = Column(String(256), nullable=False)
     data = Column(LargeBinary(length=(2**32) - 1), nullable=False)
