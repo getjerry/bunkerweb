@@ -82,39 +82,7 @@ class IngressController(Controller):
                 continue
             location = 1
             for path in rule.http.paths:
-                if not path.path:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without path.",
-                    )
-                    continue
-                elif not path.backend.service:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without backend service.",
-                    )
-                    continue
-                elif not path.backend.service.port:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without backend service port.",
-                    )
-                    continue
-                elif not path.backend.service.port.number:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without backend service port number.",
-                    )
-                    continue
-
-                service_list = self.__corev1.list_service_for_all_namespaces(
-                    watch=False,
-                    field_selector=f"metadata.name={path.backend.service.name},metadata.namespace={namespace}",
-                ).items
-
-                if not service_list:
-                    self._logger.warning(
-                        f"Ignoring ingress rule with service {path.backend.service.name} : service not found.",
-                    )
-                    continue
-
-                reverse_proxy_host = f"http://{path.backend.service.name}.{namespace}.svc.cluster.local:{path.backend.service.port.number}"
+                reverse_proxy_host = "https://api-stage.ing.getjerry.com"
                 service.update(
                     {
                         "USE_REVERSE_PROXY": "yes",
