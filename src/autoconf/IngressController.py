@@ -81,13 +81,13 @@ class IngressController(Controller):
                 services.append(service)
                 continue
             location = 1
-            for path in rule.http.paths:
+            if len(rule.http.paths) > 0:
                 reverse_proxy_host = "https://api-stage.ing.getjerry.com"
                 service.update(
                     {
                         "USE_REVERSE_PROXY": "yes",
                         f"REVERSE_PROXY_HOST_{location}": reverse_proxy_host,
-                        f"REVERSE_PROXY_URL_{location}": path.path,
+                        f"REVERSE_PROXY_URL_{location}": "/",
                     }
                 )
                 location += 1
