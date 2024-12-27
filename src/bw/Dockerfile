@@ -19,11 +19,13 @@ WORKDIR /usr/share/bunkerweb
 # Copy python requirements
 COPY src/deps/requirements.txt /tmp/requirements-deps.txt
 COPY src/common/gen/requirements.txt deps/requirements-gen.txt
+COPY src/common/db/requirements.txt deps/requirements-db.txt
 
 # Install python requirements
 RUN export MAKEFLAGS="-j$(nproc)" && \
 	pip install --break-system-packages --no-cache-dir --require-hashes --ignore-installed -r /tmp/requirements-deps.txt && \
-	pip install --break-system-packages --no-cache-dir --require-hashes --target deps/python -r deps/requirements-gen.txt
+	pip install --break-system-packages --no-cache-dir --require-hashes --target deps/python -r deps/requirements-gen.txt && \
+	pip install --break-system-packages --no-cache-dir --require-hashes --target deps/python -r deps/requirements-db.txt
 
 # Copy files
 # can't exclude deps from . so we are copying everything by hand
@@ -36,6 +38,7 @@ COPY src/common/cli cli
 COPY src/common/confs confs
 COPY src/common/core core
 COPY src/common/gen gen
+COPY src/common/db db
 COPY src/common/helpers helpers
 COPY src/common/settings.json settings.json
 COPY src/common/utils utils
