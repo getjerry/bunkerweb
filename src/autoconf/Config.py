@@ -82,9 +82,7 @@ class Config:
         i = 0
         while i < 60:
             curr_changes = self._db.check_changes()
-            self.__logger.info(f"current changed: {curr_changes}")
             first_config_saved = self._db.is_first_config_saved()
-            self.__logger.info(f"first config saved: {first_config_saved}")
             if isinstance(curr_changes, str):
                 if not startup:
                     self.__logger.error(f"An error occurred when checking for changes in the database : {curr_changes}")
