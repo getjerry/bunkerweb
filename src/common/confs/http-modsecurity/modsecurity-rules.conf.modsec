@@ -85,7 +85,9 @@ include /etc/bunkerweb/configs/modsec-crs/*.conf
 {% if is_custom_conf("/etc/nginx/modsec-crs") %}
 include /etc/nginx/modsec-crs/*.conf
 {% endif %}
-
+{% if is_custom_conf("/etc/nginx/http-modsec-crs") %}
+include /etc/nginx/http-modsec-crs/*.conf
+{% endif %}
 # unset REASON env var
 SecAction "nolog,phase:1,setenv:REASON=none"
 

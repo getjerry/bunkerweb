@@ -60,7 +60,7 @@ class Templator:
 
     def __render_global(self):
         self.__write_config()
-        templates = self.__find_templates(["global", "http", "stream", "default-server-http"])
+        templates = self.__find_templates(["global", "http", "stream", "default-server-http", "http-modsec-crs", "http-modsecurity"])
         for template in templates:
             self.__render_template(template)
 
