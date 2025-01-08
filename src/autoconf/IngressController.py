@@ -47,15 +47,6 @@ class IngressController(Controller):
         else:
             for env in pod.env:
                 instance["env"][env.name] = env.value or ""
-        for controller_service in self._get_controller_services():
-            if controller_service.metadata.annotations:
-                for (
-                    annotation,
-                    value,
-                ) in controller_service.metadata.annotations.items():
-                    if not annotation.startswith("bunkerweb.io/"):
-                        continue
-                    instance["env"][annotation.replace("bunkerweb.io/", "", 1)] = value
         return [instance]
 
     def _get_controller_services(self) -> list:
@@ -66,6 +57,8 @@ class IngressController(Controller):
             return []
         namespace = controller_service.metadata.namespace
         services = []
+        if controller_service.metadata.annotations is None or "bunkerweb.io" not in controller_service.metadata.annotations:
+            return []
         # parse rules
         for rule in controller_service.spec.rules:
             if not rule.host:
@@ -79,45 +72,13 @@ class IngressController(Controller):
                 services.append(service)
                 continue
             location = 1
-            for path in rule.http.paths:
-                if not path.path:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without path.",
-                    )
-                    continue
-                elif not path.backend.service:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without backend service.",
-                    )
-                    continue
-                elif not path.backend.service.port:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without backend service port.",
-                    )
-                    continue
-                elif not path.backend.service.port.number:
-                    self._logger.warning(
-                        "Ignoring unsupported ingress rule without backend service port number.",
-                    )
-                    continue
-
-                service_list = self.__corev1.list_service_for_all_namespaces(
-                    watch=False,
-                    field_selector=f"metadata.name={path.backend.service.name},metadata.namespace={namespace}",
-                ).items
-
-                if not service_list:
-                    self._logger.warning(
-                        f"Ignoring ingress rule with service {path.backend.service.name} : service not found.",
-                    )
-                    continue
-
-                reverse_proxy_host = f"http://{path.backend.service.name}.{namespace}.svc.cluster.local:{path.backend.service.port.number}"
+            if len(rule.http.paths) > 0:
+                reverse_proxy_host = "https://api-stage.ing.getjerry.com"
                 service.update(
                     {
                         "USE_REVERSE_PROXY": "yes",
                         f"REVERSE_PROXY_HOST_{location}": reverse_proxy_host,
-                        f"REVERSE_PROXY_URL_{location}": path.path,
+                        f"REVERSE_PROXY_URL_{location}": "/",
                     }
                 )
                 location += 1
@@ -132,12 +93,12 @@ class IngressController(Controller):
                 ) in controller_service.metadata.annotations.items():
                     if not annotation.startswith("bunkerweb.io/"):
                         continue
-
                     variable = annotation.replace("bunkerweb.io/", "", 1)
                     server_name = service["SERVER_NAME"].strip().split(" ")[0]
                     if not variable.startswith(f"{server_name}_"):
-                        continue
-                    service[variable.replace(f"{server_name}_", "", 1)] = value
+                        service[variable] = value
+                    else:
+                        service[variable.replace(f"{server_name}_", "", 1)] = value
 
         # parse tls
         if controller_service.spec.tls:
@@ -210,7 +171,7 @@ class IngressController(Controller):
         if obj.kind == "Pod":
             return annotations and "bunkerweb.io/INSTANCE" in annotations
         if obj.kind == "Ingress":
-            return True
+            return annotations and "bunkerweb.io" in annotations
         if obj.kind == "ConfigMap":
             return annotations and "bunkerweb.io/CONFIG_TYPE" in annotations
         if obj.kind == "Service":

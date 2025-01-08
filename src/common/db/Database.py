@@ -402,7 +402,6 @@ class Database:
                     multiple = True
 
                 db_setting = session.query(Settings).filter_by(id=setting).first()
-
                 if not db_setting:
                     return False
                 elif multisite and db_setting.context != "multisite":
