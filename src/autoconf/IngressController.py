@@ -51,7 +51,7 @@ class IngressController(Controller):
             if controller_service.metadata.annotations:
                 if "external-dns.alpha.kubernetes.io/hostname" not in controller_service.metadata.annotations:
                     self._logger.warning(
-                        f"external-dns.alpha.kubernetes.io/hostname not in ingress ${controller_service.metadata.name} annotations, Ignoring unsupported ingress.",
+                        f"external-dns.alpha.kubernetes.io/hostname not in ingress {controller_service.metadata.name} annotations, Ignoring unsupported ingress.",
                     )
                     continue
                 hostname = controller_service.metadata.annotations.get("external-dns.alpha.kubernetes.io/hostname")
@@ -62,7 +62,7 @@ class IngressController(Controller):
                     if not annotation.startswith("bunkerweb.io/"):
                         continue
                     config = annotation.replace("bunkerweb.io/", "", 1)
-                    instance["env"][f"${hostname}_${config}"] = value
+                    instance["env"][f"{hostname}_{config}"] = value
         return [instance]
 
     def _get_controller_services(self) -> list:
