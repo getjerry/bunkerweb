@@ -396,13 +396,14 @@ class Database:
         """Check if the setting exists in the database and optionally if it's multisite"""
         with self.__db_session() as session:
             try:
+                self.logger.info(f"ori setting: {setting}")
                 multiple = False
                 if self.suffix_rx.search(setting):
                     setting = setting.rsplit("_", 1)[0]
                     multiple = True
 
                 db_setting = session.query(Settings).filter_by(id=setting).first()
-
+                self.logger.info(f"changed setting: {setting}")
                 if not db_setting:
                     return False
                 elif multisite and db_setting.context != "multisite":

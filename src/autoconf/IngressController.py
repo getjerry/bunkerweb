@@ -54,7 +54,7 @@ class IngressController(Controller):
                         f"external-dns.alpha.kubernetes.io/hostname not in ingress {controller_service.metadata.name} annotations, Ignoring unsupported ingress.",
                     )
                     continue
-                hostname = controller_service.metadata.annotations.get("external-dns.alpha.kubernetes.io/hostname")
+                hostname = controller_service.metadata.annotations["external-dns.alpha.kubernetes.io/hostname"]
                 for (
                     annotation,
                     value,
