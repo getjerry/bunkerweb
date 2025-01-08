@@ -5,6 +5,24 @@
   "version": "1.0",
   "stream": "no",
   "settings": {
+    "USE_SERVER_MODSECURITY": {
+      "context": "multisite",
+      "default": "no",
+      "help": "Enable Server ModSecurity WAF.",
+      "id": "use-server-modsecurity",
+      "label": "Use Server ModSecurity",
+      "regex": "^(yes|no)$",
+      "type": "check"
+    },
+    "USE_SERVER_MODSECURITY_CRS": {
+      "context": "multisite",
+      "default": "no",
+      "help": "Enable OWASP Core Rule Set.",
+      "id": "use-server-modsecurity-crs",
+      "label": "Use Server Core Rule Set",
+      "regex": "^(yes|no)$",
+      "type": "check"
+    },
     "USE_MODSECURITY": {
       "context": "multisite",
       "default": "yes",

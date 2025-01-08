@@ -298,24 +298,6 @@
     "regex": "^(yes|no)$",
     "type": "check"
   },
-  "USE_GLOBAL_MODSECURITY": {
-    "context": "global",
-    "default": "yes",
-    "help": "Enable Global ModSecurity WAF.",
-    "id": "use-global-modsecurity",
-    "label": "Use Global ModSecurity",
-    "regex": "^(yes|no)$",
-    "type": "check"
-  },
-  "USE_GLOBAL_MODSECURITY_CRS": {
-    "context": "global",
-    "default": "yes",
-    "help": "Enable Global OWASP Core Rule Set.",
-    "id": "use-global-modsecurity-crs",
-    "label": "Use Global Core Rule Set",
-    "regex": "^(yes|no)$",
-    "type": "check"
-  },
   "IS_DRAFT": {
     "context": "multisite",
     "default": "no",
