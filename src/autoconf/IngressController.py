@@ -47,22 +47,6 @@ class IngressController(Controller):
         else:
             for env in pod.env:
                 instance["env"][env.name] = env.value or ""
-        for controller_service in self._get_controller_services():
-            if controller_service.metadata.annotations:
-                if "external-dns.alpha.kubernetes.io/hostname" not in controller_service.metadata.annotations:
-                    self._logger.warning(
-                        f"external-dns.alpha.kubernetes.io/hostname not in ingress {controller_service.metadata.name} annotations, Ignoring unsupported ingress.",
-                    )
-                    continue
-                hostname = controller_service.metadata.annotations["external-dns.alpha.kubernetes.io/hostname"]
-                for (
-                    annotation,
-                    value,
-                ) in controller_service.metadata.annotations.items():
-                    if not annotation.startswith("bunkerweb.io/"):
-                        continue
-                    config = annotation.replace("bunkerweb.io/", "", 1)
-                    instance["env"][f"{hostname}_{config}"] = value
         return [instance]
 
     def _get_controller_services(self) -> list:
@@ -109,12 +93,12 @@ class IngressController(Controller):
                 ) in controller_service.metadata.annotations.items():
                     if not annotation.startswith("bunkerweb.io/"):
                         continue
-
                     variable = annotation.replace("bunkerweb.io/", "", 1)
                     server_name = service["SERVER_NAME"].strip().split(" ")[0]
                     if not variable.startswith(f"{server_name}_"):
-                        continue
-                    service[variable.replace(f"{server_name}_", "", 1)] = value
+                        service[variable] = value
+                    else:
+                        service[variable.replace(f"{server_name}_", "", 1)] = value
 
         # parse tls
         if controller_service.spec.tls:
