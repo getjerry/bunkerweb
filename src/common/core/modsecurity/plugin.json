@@ -5,24 +5,6 @@
   "version": "1.0",
   "stream": "no",
   "settings": {
-    "USE_GLOBAL_MODSECURITY": {
-      "context": "multisite",
-      "default": "yes",
-      "help": "Enable Global ModSecurity WAF.",
-      "id": "use-modsecurity",
-      "label": "Use ModSecurity",
-      "regex": "^(yes|no)$",
-      "type": "check"
-    },
-    "USE_GLOBAL_MODSECURITY_CRS": {
-      "context": "multisite",
-      "default": "yes",
-      "help": "Enable Global OWASP Core Rule Set.",
-      "id": "use-modsecurity-crs",
-      "label": "Use Core Rule Set",
-      "regex": "^(yes|no)$",
-      "type": "check"
-    },
     "USE_MODSECURITY": {
       "context": "multisite",
       "default": "yes",
